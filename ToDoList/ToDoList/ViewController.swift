@@ -9,12 +9,8 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    var tasks = [
-        ToDoModel(task: "1", isDone: false),
-        ToDoModel(task: "2", isDone: false),
-        ToDoModel(task: "3", isDone: false),
-        ToDoModel(task: "4", isDone: false)
-    ]
+
+    var allTasks: [[ToDoModel]] = [[], []]
     
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
@@ -43,42 +39,49 @@ class ViewController: UIViewController {
         navigationController?.pushViewController(destination, animated: true)
         
         destination.clousure = { model in
-            self.tasks.append(model)
+            self.allTasks[0].append(model)
             self.tableView.reloadData()
         }
     }
 }
 
 extension ViewController: UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tasks.count
-        
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return allTasks.count
     }
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return "pending tasks"
+        } else {
+            return "done tasks"
+            
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return allTasks[section].count //(tasks.count + done.count)
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "todocell", for: indexPath) as? ToDoCell
         else {
             return UITableViewCell()
         }
-        cell.setup(task: tasks[indexPath.row])
+        cell.setup(task: allTasks[indexPath.section][indexPath.row]) //(tasks + done)[indexPath.row])
+        cell.selectionStyle = .none
         return cell
     }
-//---------------------------------------------------------------------------------------------
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-            if tasks[section].isDone == true {
-                return "is Done"
-            } else { return "not Done" }
-    }
-    
-//---------------------------------------------------------------------------------------------
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
+    
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return.none
     }
+    
     func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
         return false
     }
@@ -88,26 +91,43 @@ extension ViewController: UITableViewDataSource {
 extension ViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tasks[indexPath.row].isDone = true
+        if indexPath.section != 0 {return}
+        var doneTask = allTasks[indexPath.section][indexPath.row]
+        doneTask.isDone = true
+        
+        allTasks[indexPath.section].remove(at: indexPath.row)
+        
+        allTasks[1].append(doneTask)
+        
         tableView.reloadData()
+
     }
     
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let mooveObject = tasks[sourceIndexPath.row]
-        tasks.remove(at: sourceIndexPath.row)
-        tasks.insert(mooveObject, at: destinationIndexPath.row)
+
+        var moveCell = allTasks[sourceIndexPath.section][sourceIndexPath.row]
+        if sourceIndexPath.section != destinationIndexPath.section {
+            moveCell.isDone.toggle()
+        }
+        allTasks[sourceIndexPath.section].remove(at: sourceIndexPath.row)
+        allTasks[destinationIndexPath.section].insert(moveCell, at: destinationIndexPath.row)
+        
+        tableView.reloadData()
     }
     
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let undoneAction = UIContextualAction(style: .normal, title: "UnDone") { _, _, completion in
-            self.tasks[indexPath.row].isDone = false
+            self.allTasks[indexPath.section][indexPath.row].isDone = false
+            let undoneTask = self.allTasks[indexPath.section][indexPath.row]
+            self.allTasks[indexPath.section].remove(at: indexPath.row)
+            self.allTasks[0].append(undoneTask)
             self.tableView.reloadData()
             completion(true)
         }
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { _, _, completion in
-            self.tasks.remove(at: indexPath.row)
+            self.allTasks[indexPath.section].remove(at: indexPath.row)
             self.tableView.reloadData()
             completion(true)
         }
@@ -115,7 +135,8 @@ extension ViewController: UITableViewDelegate {
         
         undoneAction.backgroundColor = .systemBlue
         deleteAction.backgroundColor = .systemRed
-        return UISwipeActionsConfiguration(actions: [undoneAction, deleteAction])
+        
+        return UISwipeActionsConfiguration(actions: indexPath.section == 0 ? [deleteAction] : [undoneAction, deleteAction])
     }
     
 }
