@@ -11,6 +11,7 @@ class ToDoCell: UITableViewCell {
 
 	@IBOutlet weak var taskLabel: UILabel!
     @IBOutlet weak var iconImageView: UIImageView!
+    @IBOutlet weak var dateLabel: UILabel!
     
 
 	override func awakeFromNib() {
@@ -27,6 +28,17 @@ class ToDoCell: UITableViewCell {
 	func setup(task: ToDoModel) {
         taskLabel.text = task.task
         iconImageView.isHidden = !task.isDone
+        setDateInLabel(task.dedlineDate)
 	}
     
+    func setDateInLabel(_ date: Date) {
+        let dateFormater = DateFormatter()
+        
+//        dateFormater.dateStyle = .long
+//        dateFormater.timeStyle = .short
+        dateFormater.dateFormat = "HH:mm E, d MMM y"
+        
+        dateLabel.text = dateFormater.string(from: date)
+        
+    }
 }

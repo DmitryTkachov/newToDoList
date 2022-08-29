@@ -68,25 +68,32 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oV6-Ec-20L">
                                 <rect key="frame" x="16" y="811" width="382" height="31"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Add task"/>
                                 <connections>
                                     <action selector="addTaskButton:" destination="xjr-MF-SST" eventType="touchUpInside" id="WmK-id-7iB"/>
                                 </connections>
                             </button>
+                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="5" translatesAutoresizingMaskIntoConstraints="NO" id="zLe-S2-jCe">
+                                <rect key="frame" x="0.0" y="160" width="414" height="216"/>
+                            </datePicker>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="c6C-nJ-CzC"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="zLe-S2-jCe" firstAttribute="trailing" secondItem="c6C-nJ-CzC" secondAttribute="trailing" id="5ud-zy-D9I"/>
                             <constraint firstItem="c6C-nJ-CzC" firstAttribute="trailing" secondItem="lcq-0E-gBN" secondAttribute="trailing" constant="16" id="AtL-Qa-HXc"/>
                             <constraint firstItem="c6C-nJ-CzC" firstAttribute="trailing" secondItem="oV6-Ec-20L" secondAttribute="trailing" constant="16" id="Is5-nZ-dfZ"/>
                             <constraint firstItem="c6C-nJ-CzC" firstAttribute="bottom" secondItem="oV6-Ec-20L" secondAttribute="bottom" constant="20" id="KWP-Ok-9Mj"/>
                             <constraint firstItem="lcq-0E-gBN" firstAttribute="top" secondItem="c6C-nJ-CzC" secondAttribute="top" constant="32" id="Tpo-Gd-eMf"/>
+                            <constraint firstItem="zLe-S2-jCe" firstAttribute="leading" secondItem="c6C-nJ-CzC" secondAttribute="leading" id="WBz-YC-fTa"/>
+                            <constraint firstItem="zLe-S2-jCe" firstAttribute="top" secondItem="lcq-0E-gBN" secondAttribute="bottom" constant="50" id="hP2-P2-xFe"/>
                             <constraint firstItem="lcq-0E-gBN" firstAttribute="leading" secondItem="c6C-nJ-CzC" secondAttribute="leading" constant="16" id="sGF-DU-v2D"/>
                             <constraint firstItem="oV6-Ec-20L" firstAttribute="leading" secondItem="c6C-nJ-CzC" secondAttribute="leading" constant="16" id="txT-bT-F4N"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="addTaskTF" destination="lcq-0E-gBN" id="ET2-6U-xEP"/>
+                        <outlet property="datePicker" destination="zLe-S2-jCe" id="wat-I2-d17"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8pe-cp-rxf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
